@@ -1,18 +1,20 @@
 n = 9;
-A = poisson_stencil2D(n);       % Matrika za Poissonovo enačbo
-f = ones((n-1)^2, 1);           % Desna stran
-u = zeros(size(f));             % Začetna rešitev
-omega = 1.5;                      % parameter Gauss-Seidla (za omego, večje od 1, dobimo hitrejšo konvergenco) 
+A = poisson_stencil2D(n);       % matrika za Poissonovo enačbo
+f = ones((n-1)^2, 1);           % desna stran
+u = zeros(size(f));             % začetna rešitev
+omega = 1;                      % parameter Gauss-Seidla (za omego, večje od 1, dobimo hitrejšo konvergenco) 
 
-z_min = 0;
+z_min = 0;                      % zgornja in spodnja meja za približke
 z_max = 0.07;
 
 residuals = zeros(100, 1);
 
+% Opravimo 100 korakov
+
 for i = 1:100
     u = relaxGaussSeidel(A, u, f, omega);
 
-    % Izračunaj residual
+    % Izračun residuala
     r = f - A * u;
     residuals(i) = norm(r, 2);
 
@@ -32,6 +34,7 @@ for i = 1:100
 end
 
 % Prikaz konvergence
+
 figure;
 semilogy(1:100, residuals, 'b-', 'LineWidth', 2);
 xlabel('Iteracija');
