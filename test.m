@@ -1,12 +1,11 @@
 
-n = 9;
-% Velikost mreže (izberi tako, da je n-1 sodo število)
-A = poisson_stencil2D(n);  % Matrika za Poissonovo enačbo
-f = ones((n-1)^2, 1);  % Desna stran enačbe (vse enice)
-u = zeros(size(f));  % Začetna rešitev
-omega = 1;  % parameter Gauss-Seidla
+n = 9; % velikost mreže (vedno moramo izbrati tako, da je n-1 sodo število)
+A = poisson_stencil2D(n);  % matrika za Poissonovo enačbo
+f = ones((n-1)^2, 1);  % desna stran enačbe (vse enice)
+u = zeros(size(f));  % začetna rešitev
+omega = 1;  % parameter Gauss-Seidela
 
-z_min = 0;
+z_min = 0;   % zgornja in spodnja meja za približke
 z_max = 0.07;
 
 % 100 korakov GS
@@ -14,13 +13,14 @@ for i = 1:100
     u = relaxGaussSeidel(A, u, f, omega);
 
     % Vizualizacija po vsakih 10 korakih
+
     if mod(i, 10) == 0
-        U = reshape(u, n-1, n-1);  % Pretvori rešitev v 2D
+        U = reshape(u, n-1, n-1);  % ta del pretvori rešitev v 2D
         figure;
         surf(U);
         title(['Rešitev po ', num2str(i), ' korakih']);
         xlabel('x'); ylabel('y'); zlabel('u(x, y)');
-        zlim([z_min, z_max]);     % Fiksna višina
+        zlim([z_min, z_max]);     % višino fiksiramo
         clim([z_min, z_max]);
         colorbar;
         pause(0.1);
@@ -46,8 +46,8 @@ surf(reshape(r_coarse, 4, 4))
 title('Rezidual na grobi mreži')
 colorbar
 
-T = interpolation2D((n-1)/2);  % Interpolacijska matrika za grobo mrežo velikosti (n-1)/2
-e_coarse = r_coarse;  % recimo, da je napaka približno enaka rezidualu
+T = interpolation2D((n-1)/2);  % interpolacijska matrika za grobo mrežo velikosti (n-1)/2
+e_coarse = r_coarse;  % recimo, da je napaka približno enaka rezidualu (za poenostavitev problema)
 e_fine = T * e_coarse;
 
 % Popravek rešitve
@@ -65,7 +65,7 @@ title('Popravljena rešitev po interpolaciji');
 xlabel('x'); ylabel('y'); zlabel('u(x, y)');
 colorbar;
 
- %Lahko tudi ponovno izračunamo rezidual po popravku:
+ %Lahko tudi ponovno izračunamo rezidual po popravku (ni pa nujno):
 r_corrected = f - A * u_corrected;
 disp('Rezidual po popravku (r\_corrected):');
 disp(r_corrected);
