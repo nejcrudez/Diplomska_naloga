@@ -1,8 +1,8 @@
-%% Semi-implicitna toplotna enačba: eksplicitni Euler + GS + MG popravki
+
 clear; clc;
 
-%% 1) Nastavitve
-n        = 33;                 % točk po dimenziji (notranjih n-1=32)
+%% 1) Začetne nastavitve
+n        = 33;                 % število točk(notranjih je 32)
 h        = 1/n;                % prostorski korak
 A        = poisson_stencil2D(n);
 tau      = 0.001;              % časovni korak
@@ -10,7 +10,7 @@ T        = 0.05;               % končni čas
 omega    = 1;                  % Gauss–Seidel parameter
 numSteps = round(T/tau);
 
-%% 2) Začetni pogoj: topla pega v središču
+%% 2) Definiramo toplo pego v središču
 [x,y] = meshgrid(h:h:1-h, h:h:1-h);
 U     = exp(-50*((x-0.5).^2 + (y-0.5).^2));
 u     = U(:);
@@ -26,10 +26,10 @@ drawnow;
 
 %% 4) Časovna zanka
 for t = 1:numSteps
-    % 4a) eksplicitni Euler (napoved)
+    % napoved z eksplicitno Eulerjevo metodo
     f = u + tau*(A*u);
     
-    % 4b) pred-glajenje: 10 GS-sweepov
+    % 4b) predglajenje: 10 korakov
     for k = 1:10
         u = relaxGaussSeidel(A, u, f, omega);
     end
@@ -37,13 +37,13 @@ for t = 1:numSteps
     % 4c) rezidual
     r = f - A*u;
     
-    % 4d) en V-cikel (MG popravki)
+    % 4d) en V-cikel 
     R      = restrictionFW2D(n);
     Pmat   = interpolation2D((n-1)/2);
     rc     = R * r;
     ec     = rc;               % coarse solve ≈ residual
     e_fine = Pmat * ec;        % prolongacija
-    u      = u + e_fine;       % korekcija
+    u      = u + e_fine;       % popravek
     
     % 4e) vizualizacija na vsakem 5. koraku
     if mod(t, 5) == 0
