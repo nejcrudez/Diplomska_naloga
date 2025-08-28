@@ -1,3 +1,5 @@
+clc
+
 %% Priprava (enkrat)
 levels = 4;             % št. nivojev za F-cikel
 Nfin   = 16;            % št. notranjih točk na finest mreži
@@ -11,7 +13,7 @@ for k = 1:levels
     A{k} = poisson_stencil2D(n);
     if k<levels
         R{k} = restrictionFW2D(n);
-        P{k} = interpolation2D((n-1)/2);
+        P{k} = interpolation2D((n)/2);
     end
 end
 A1 = A{1}; R1 = R{1}; P1 = P{1};
