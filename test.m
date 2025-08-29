@@ -46,7 +46,7 @@ surf(reshape(r_coarse, 4, 4))
 title('Rezidual na grobi mreži')
 colorbar
 
-T = interpolation2D((n-1)/2);  % interpolacijska matrika za grobo mrežo velikosti (n-1)/2
+T = interpolation2D((n)/2);  % interpolacijska matrika za grobo mrežo velikosti (n-1)/2
 e_coarse = r_coarse;  % recimo, da je napaka približno enaka rezidualu (za poenostavitev problema)
 e_fine = T * e_coarse;
 
